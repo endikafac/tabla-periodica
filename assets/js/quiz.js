@@ -27,10 +27,10 @@ const QFAMOK = ["He","Ne","Ar","Li","Na","K","Fe","Cu","Au","Ag","Cl","F","I","C
 const QEASYMOL = ["H₂O","NaCl","CO₂","O₂","CH₄","SiO₂","Fe₂O₃","CaCO₃"];
 const QX = {
 es:{pick:"¿Cuántas preguntas quieres?",go:"¡Vamos!",qn:"Pregunta",of:"de",endH:"¡Se acabó!",again:"Jugar otra vez",change:"Cambiar número de preguntas",
- r3:"¡Eres un genio de los elementos!",r2:"¡Muy bien! Sigue practicando y serás un genio.",r1:"¡Buen intento! Mira las fichas y vuelve a probar.",right:"aciertos",questions:"preguntas",listen:"🔊 Escuchar",
+ r3:"¡Eres un genio de los elementos!",r2:"¡Muy bien! Sigue practicando y serás un genio.",r1:"¡Buen intento! Mira las fichas y vuelve a probar.",right:"aciertos",questions:"preguntas",know:"¿Sabías que…?",lab:"Es un elemento fabricado en un laboratorio. Dura muy poco tiempo (a veces solo unos segundos), ¡por eso casi nadie lo ve!",modeH:"¿Qué elementos quieres?",modes:[["easy","🌟","Elementos conocidos","Oxígeno, hierro, oro…"],["rare","🔬","Elementos raros","Neptunio, europio, francio… ¡con explicaciones!"],["mix","🎲","Todo mezclado","De los fáciles a los raros"]],listen:"🔊 Escuchar",
  sub:"Preguntas para todos: fáciles y divertidas"},
 eu:{pick:"Zenbat galdera nahi dituzu?",go:"Goazen!",qn:"Galdera",of:"/",endH:"Amaitu da!",again:"Berriro jolastu",change:"Galdera kopurua aldatu",
- r3:"Elementuen jenioa zara!",r2:"Oso ondo! Segi praktikatzen eta jenioa izango zara.",r1:"Saiakera ona! Begiratu fitxei eta saiatu berriro.",right:"asmatu",questions:"galdera",listen:"🔊 Entzun",
+ r3:"Elementuen jenioa zara!",r2:"Oso ondo! Segi praktikatzen eta jenioa izango zara.",r1:"Saiakera ona! Begiratu fitxei eta saiatu berriro.",right:"asmatu",questions:"galdera",know:"Ba al zenekien…?",lab:"Laborategian egindako elementua da. Oso denbora gutxi irauten du (batzuetan segundo batzuk bakarrik), horregatik ia inork ez du ikusten!",modeH:"Zein elementu nahi dituzu?",modes:[["easy","🌟","Elementu ezagunak","Oxigenoa, burdina, urrea…"],["rare","🔬","Elementu arraroak","Neptunioa, europioa, frantzioa… azalpenekin!"],["mix","🎲","Dena nahasita","Errazetatik arraroetara"]],listen:"🔊 Entzun",
  sub:"Galderak denentzat: errazak eta dibertigarriak"}
 };
 
@@ -45,7 +45,7 @@ function renderQuizPage(ctx){
     const name = nm(el), stem = name.length>4 ? name.slice(0,-1) : name;
     return txt.replace(new RegExp("(?<![\\p{L}])"+stem.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"[\\p{L}]*","giu"),"___");
   };
-  const mk = (id,type,build) => ({id,type,build});
+  const mk = (id,type,build,tier) => ({id,type,build,tier:tier||"easy"});
   const bank = [];
 
   kids.forEach(el=>{
@@ -85,14 +85,37 @@ function renderQuizPage(ctx){
   QGEN[L].forEach((g,i)=>bank.push(mk("g:"+i,"gen",()=>({big:"🤔",q:g[0],opts:[g[1],g[2],g[3]].map((l,j)=>({l,c:j===0})),el:null}))));
   QTF[L].forEach((g,i)=>bank.push(mk("t:"+i,"tf",()=>({big:"✅❌",q:q.tf,hint:g[0],opts:[{l:q.t,c:!!g[1]},{l:q.f,c:!g[1]}],el:null,noshuffle:true}))));
 
+  /* rare elements: same simple questions, but every answer comes with a kid-friendly explanation */
+  const rareHintPool = RAW.filter(e=>!QKIDS.includes(e.s)&&e.n<=92);
+  const labPool = RAW.filter(e=>e.n>=93);
+  RAW.filter(e=>!QKIDS.includes(e.s)).forEach(el=>{
+    const pool = el.n>=93 ? labPool : rareHintPool;
+    bank.push(mk("rh:"+el.s,"hint",()=>{const o=[el,...pick(pool,2,el)];return {big:el.e,q:q.hint,hint:blank(el.h[L],el),opts:o.map(v=>({l:cap(nm(v)),c:v===el,cat:v.c})),el};},"rare"));
+  });
+  const rareUse = Object.keys(RICH).filter(s=>!QKIDS.includes(s)).map(byS);
+  rareUse.forEach(el=>{
+    RICH[el.s].u[L].forEach((t,i)=>{
+      if(/bater|altzairu|acero|iman|imán|medicin|sendagai|fibra|zuntz|láser|laser|pantalla|pantaila|chip|txip/i.test(t)) return;
+      const k = t.indexOf(" ");
+      bank.push(mk("ru:"+el.s+i,"use",()=>{const o=[el,...pick(rareUse,2,el)];return {big:t.slice(0,k),q:q.use,hint:blank(t.slice(k+1),el),opts:o.map(v=>({l:cap(nm(v)),c:v===el,cat:v.c})),el};},"rare"));
+    });
+  });
+  const expl = el => {
+    let t = "<b>"+esc(cap(nm(el)))+"</b> (#"+el.n+"): "+esc(el.h[L]);
+    if(el.n>=104||FACTS[el.n-1].st==="?") t += " "+x.lab;
+    const r = RICH[el.s]; if(r) t += " "+esc(r.c[L]);
+    return t;
+  };
+
   /* deck without repeats, remembered between visits */
   const KEY = "tp-quiz2-"+L;
   let seen = new Set(); try{ seen = new Set(JSON.parse(localStorage.getItem(KEY)||"[]")); }catch(e){}
   const save = () => { try{localStorage.setItem(KEY,JSON.stringify([...seen]))}catch(e){} };
-  let deck = [], lastType = null;
+  let deck = [], lastType = null, mode = "mix";
   const refill = () => {
-    let left = bank.filter(b=>!seen.has(b.id));
-    if(!left.length){ seen.clear(); save(); left = bank.slice(); }
+    const inMode = bank.filter(b=>mode==="mix"||b.tier===mode);
+    let left = inMode.filter(b=>!seen.has(b.id));
+    if(!left.length){ inMode.forEach(b=>seen.delete(b.id)); save(); left = inMode.slice(); }
     deck = shuffle(left);
   };
   const draw = () => {
@@ -105,9 +128,15 @@ function renderQuizPage(ctx){
   const box = $("#quiz");
 
   function start(){
+    box.innerHTML = `<div class="bigem">🧪</div><div class="q">${x.modeH}</div>
+      <div class="opts modes">${x.modes.map(([k,e,t,d])=>`<button class="opt mode" data-m="${k}"><span class="sy">${e}</span>${t}<small>${d}</small></button>`).join("")}</div>`;
+    box.querySelectorAll(".mode").forEach(b=>b.onclick=()=>{ mode=b.dataset.m; deck=[]; count(); });
+  }
+  function count(){
     box.innerHTML = `<div class="bigem">🧪</div><div class="q">${x.pick}</div>
       <div class="opts lens">${[10,25,50].map(n=>`<button class="opt len" data-n="${n}"><span class="sy">${n}</span><small>${x.questions}</small></button>`).join("")}</div>`;
     box.querySelectorAll(".len").forEach(b=>b.onclick=()=>play(+b.dataset.n));
+    box.insertAdjacentHTML("beforeend",`<div class="fbtns"><button class="btn" id="back">◀ ${x.modeH}</button></div>`); $("#back").onclick = start;
   }
   function play(total){
     let asked = 0, score = 0, streak = 0;
@@ -133,7 +162,7 @@ function renderQuizPage(ctx){
         btns.forEach((v,i)=>{v.disabled=true; if(opts[i].c) v.classList.add("ok");});
         const right = opts.find(o=>o.c).l;
         const last = asked>=total;
-        $("#fb").innerHTML = `${ok?q.ok[Math.floor(Math.random()*q.ok.length)]:`${q.answer} <b>${esc(right)}</b>`}<div class="fbtns"><button class="btn y" id="nx">${last?x.endH:q.next}</button>${d.el?`<a class="btn" href="elemento.html?n=${d.el.n}">${q.sheet} ${d.el.e}</a>`:""}</div>`;
+        $("#fb").innerHTML = `${ok?q.ok[Math.floor(Math.random()*q.ok.length)]:`${q.answer} <b>${esc(right)}</b>`}<div class="fbtns"><button class="btn y" id="nx">${last?x.endH:q.next}</button>${d.el?`<a class="btn" href="elemento.html?n=${d.el.n}">${q.sheet} ${d.el.e}</a>`:""}</div>${d.el?`<div class="expl">💡 <b>${x.know}</b> ${expl(d.el)}</div>`:""}`;
         $("#nx").onclick = next; $("#nx").focus({preventScroll:true});
       };
       btns.forEach((v,i)=>v.onclick=()=>{

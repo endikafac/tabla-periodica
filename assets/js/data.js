@@ -73,7 +73,7 @@ const RAW = `
 71|Lu|lutecio|lutezioa|🏥|Se usa en escáneres médicos.|Eskaner medikuetan erabiltzen da.
 72|Hf|hafnio|hafnioa|💻|Está en chips de ordenador.|Ordenagailuen txipetan dago.
 73|Ta|tántalo|tantaloa|📱|Está en los móviles.|Mugikorretan dago.
-74|W|wolframio|wolframa|💡|El hilito de las bombillas antiguas. Lo descubrieron dos hermanos vascos.|Bonbilla zaharren hari fina. Bi euskal anaiak aurkitu zuten.
+74|W|wolframio|wolframa|💡|El hilito de las bombillas antiguas.|Bonbilla zaharren hari fina.
 75|Re|renio|renioa|✈️|Aguanta el calor en los motores de los aviones.|Hegazkinen motorretako beroa jasaten du.
 76|Os|osmio|osmioa|⚖️|Es el metal más pesado que existe.|Dagoen metalik astunena da.
 77|Ir|iridio|iridioa|🦖|Los meteoritos lo traen. Se encontró donde cayó el que acabó con los dinosaurios.|Meteoritoek ekartzen dute. Dinosauroak desagerrarazi zituenaren lekuan aurkitu zen.
