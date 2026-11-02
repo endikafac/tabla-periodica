@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Poster</title>
+<link rel="stylesheet" href="assets/css/style.css">
+<style>
+/* Poster renderer: ?type=tabla|secretos&lang=es|eu. Fixed canvas, screenshot at 2x. */
+html,body{height:auto;overflow:visible}
+body{margin:0;background:none}
+#poster{position:relative;overflow:hidden;color:var(--ink);font-family:"Fredoka",sans-serif;
+  background:radial-gradient(circle at 8% 12%,#fff 0 14px,transparent 15px),radial-gradient(circle at 92% 9%,#fff 0 22px,transparent 23px),
+  radial-gradient(circle at 50% 100%,#fff9 0 60px,transparent 61px),linear-gradient(180deg,#c6ecff,#fff4cf)}
+#poster.tabla{width:1500px;height:1000px}
+#poster.secretos{width:1200px;height:1000px}
+.title{text-align:center;font-weight:700;letter-spacing:1px;line-height:1}
+.title span{display:inline;white-space:pre;-webkit-text-stroke:3px var(--ink);paint-order:stroke fill;text-shadow:0 4px 0 var(--ink)}
+.sub{text-align:center;font-weight:600}
+.deco{position:absolute;line-height:1;filter:drop-shadow(0 3px 0 #0002)}
+
+/* ---- tabla ---- */
+.tabla .title{font-size:70px;padding-top:14px}
+.tabla .sub{font-size:26px;margin:4px 0 6px}
+.tgrid{position:absolute;left:36px;right:36px;top:118px;display:grid;grid-template-columns:repeat(18,1fr);gap:4px;grid-template-rows:repeat(7,76px) 14px repeat(2,76px)}
+.pc{position:relative;background:var(--c);border:3px solid var(--ink);border-radius:13px;box-shadow:0 4px 0 var(--ink),inset 0 4px 0 #fff7;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+.pc .n{position:absolute;top:3px;left:6px;font-size:13px;font-weight:700}
+.pc .e{position:absolute;top:1px;right:4px;font-size:21px;line-height:1.1}
+.pc .s{font-size:31px;font-weight:700;line-height:1;margin-top:8px}
+.pc .nm{font-size:11.5px;font-weight:600;line-height:1;margin-top:3px;white-space:nowrap}
+.pc .nm.l{font-size:10px;letter-spacing:-.2px}
+.pc.ph2{border-style:dashed;font-size:10.5px;letter-spacing:-.3px;padding:0 2px;font-weight:700;text-align:center;line-height:1.1;box-shadow:none}
+.keyp{background:#fff;border:3px solid var(--ink);border-radius:18px;box-shadow:0 5px 0 var(--ink);display:flex;gap:14px;align-items:center;padding:8px 14px}
+.keyp .mini{position:relative;flex:none;width:90px;height:98px;background:var(--alk);border:3px solid var(--ink);border-radius:13px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.keyp .mini .n{position:absolute;top:3px;left:6px;font-size:16px;font-weight:700}
+.keyp .mini .e{position:absolute;top:0;right:4px;font-size:26px}
+.keyp .mini .s{font-size:42px;font-weight:700;line-height:1;margin-top:10px}
+.keyp .mini .nm{font-size:14px;font-weight:600}
+.keyp h3{margin:0 0 4px;font-size:22px}
+.keyp ol{margin:0;padding:0;list-style:none;font-size:18px;font-weight:600;line-height:1.3}
+.keyp ol b{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--ink);color:#fff;margin-right:8px;font-size:14px}
+.mascots{display:flex;align-items:center;justify-content:space-around;font-size:78px;background:#ffffffaa;border:3px dashed var(--ink);border-radius:22px}
+.mascots .say{font-size:22px;font-weight:700;max-width:210px;line-height:1.15;background:#fff;border:3px solid var(--ink);border-radius:20px;padding:8px 14px}
+.legendp{position:absolute;left:36px;right:36px;bottom:16px;height:112px;background:#fff;border:3px solid var(--ink);border-radius:22px;box-shadow:0 5px 0 var(--ink);display:flex;align-items:center;gap:18px;padding:10px 20px}
+.legendp h3{margin:0;font-size:28px}
+.legendp .chips{flex:1;display:grid;grid-template-columns:repeat(5,1fr);gap:8px 12px}
+.legendp .ch{display:flex;align-items:center;gap:8px;font-size:17px;font-weight:600;line-height:1.05}
+.legendp .sw{flex:none;width:26px;height:26px;border-radius:8px;border:3px solid var(--ink);background:var(--c)}
+
+/* ---- secretos ---- */
+.secretos .title{font-size:37px;padding-top:14px;white-space:pre}
+.panels{position:absolute;left:24px;right:24px;top:94px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.panel{position:relative;background:#fff;border:4px solid var(--ink);border-radius:26px;box-shadow:0 6px 0 var(--ink);padding:34px 16px 10px;height:188px;font-size:17px;font-weight:500;line-height:1.25}
+.panel h2{position:absolute;top:-18px;left:50%;transform:translateX(-50%);margin:0;background:var(--ink);color:#fff;border-radius:16px;padding:2px 20px;font-size:25px;white-space:nowrap}
+.panel .em{position:absolute;right:8px;bottom:4px;font-size:50px}
+.panel p{margin:0;max-width:78%}
+.minit{display:grid;grid-template-columns:repeat(18,1fr);gap:1px;margin-top:6px;max-width:68%}
+.minit i{height:6px;border-radius:2px;background:var(--c);border:1px solid #2b2d6e55}
+.exh{position:absolute;left:24px;right:24px;top:304px;text-align:center;font-size:28px;font-weight:700;margin:0}
+.exgrid{position:absolute;left:24px;right:24px;top:350px;display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.ex2{background:var(--bgc);border:4px solid var(--ink);border-radius:22px;box-shadow:0 5px 0 var(--ink);height:214px;padding:6px 8px;text-align:center;display:flex;flex-direction:column;align-items:center}
+.ex2 h4{margin:0;font-size:19px;line-height:1.05;min-height:40px;display:flex;align-items:center}
+.ex2 .fm{font-size:19px;font-weight:700;margin-top:2px}
+.ex2 .vis{flex:1;display:flex;align-items:center;gap:6px}
+.ex2 .vis .em{font-size:46px}
+.ex2 .at{display:flex;gap:2px;align-items:center;flex-wrap:wrap;justify-content:center;max-width:150px}
+.at i{position:relative;font-style:normal;width:32px;height:32px;border-radius:50%;border:3px solid var(--ink);display:grid;place-items:center;font-size:15px;font-weight:700;background:var(--cpk,#ddd);color:var(--tx,#2b2d6e)}
+.at i b{position:absolute;right:-6px;bottom:-6px;background:var(--ink);color:#fff;border-radius:99px;font-size:11px;padding:0 4px;font-weight:600}
+.ex2 .tx{font-size:14px;font-weight:600;line-height:1.15;min-height:48px}
+.disc{position:absolute;left:24px;right:24px;top:802px}
+.disc h3{margin:0 0 6px;text-align:center;font-size:26px}
+.dgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+.dc{background:#fff;border:3px solid var(--ink);border-radius:18px;box-shadow:0 4px 0 var(--ink);padding:6px 8px;height:140px;text-align:center;font-size:14px;line-height:1.12}
+.dc .em{font-size:30px;line-height:1.1}
+.dc .yr{display:inline-block;background:var(--lan);border:2px solid var(--ink);border-radius:8px;padding:0 7px;font-weight:700;font-size:13px}
+.dc b{display:block;font-size:15px}
+</style>
+</head>
+<body>
+<div id="poster"></div>
+<script src="assets/js/data.js"></script>
+<script src="assets/js/content.js"></script>
+<script src="assets/js/ui.js"></script>
+<script>
+const P = new URLSearchParams(location.search), TYPE = P.get("type")||"tabla", L = P.get("lang")||"es";
+const tt = T[L], u = UI[L], byS = s => RAW.find(x=>x.s===s), nm = el => el[L];
+const root = document.getElementById("poster"); root.className = TYPE;
+document.documentElement.lang = L;
+
+const PT = {
+ es:{ttl:"TABLA PERIÓDICA PARA NIÑOS", sub:"Los 118 elementos de los que está hecho todo el universo", say:"¡Hola! Toca cada casilla y descubre dónde vive cada elemento", foot:"Nombres según la Real Sociedad Española de Química (RSEQ)", leg:"Leyenda",
+  sTtl:["¡LOS ","SECRETOS"," DE LOS ","ELEMENTOS"," Y SUS ","COMBINACIONES","!"], q1:"¿Qué es?", q2:"¿Para qué sirve?", q3:"¿Cómo se ordena?",
+  a1:"Los elementos son como bloques de construcción invisibles (¡como piezas de LEGO!) que forman todo lo que existe en el universo.",
+  a2:"¡Para crearlo todo! Desde el aire que respiras hasta la tablet que usas, todo está hecho de combinaciones de elementos.",
+  a3:"Del 1 al 118, según su número atómico, en filas y columnas. Los de una misma columna se parecen, como hermanos.",
+  exh:"¡10 SÚPER EJEMPLOS DE COMBINACIONES (MOLÉCULAS)!", dh:"¿Quién los descubrió?", join:" + ", of:" de "},
+ eu:{ttl:"TAULA PERIODIKOA HAURRENTZAT", sub:"Unibertso osoa osatzen duten 118 elementuak", say:"Kaixo! Ukitu laukitxo bakoitza eta ezagutu elementu bakoitza non bizi den", foot:"Izenak Real Sociedad Española de Química (RSEQ) erakundearen arabera", leg:"Legenda",
+  sTtl:["ELEMENTUEN ","SEKRETUAK"," ETA HAIEN ","KONBINAZIOAK","","",""], q1:"Zer da?", q2:"Zertarako balio du?", q3:"Nola dago ordenatuta?",
+  a1:"Elementuak ikusten ez diren eraikuntza-blokeak bezalakoak dira (LEGO piezak bezala!) eta unibertsoan dagoen guztia osatzen dute.",
+  a2:"Dena sortzeko! Arnasten duzun airetik erabiltzen duzun tabletara arte, dena elementuen konbinazioz egina dago.",
+  a3:"1etik 118ra, zenbaki atomikoaren arabera, errenkada eta zutabetan. Zutabe bereko elementuak antzekoak dira, senideak bezala.",
+  exh:"10 KONBINAZIO-ADIBIDE SUPER (MOLEKULAK)!", dh:"Nork aurkitu zituen?", join:" + ", of:" "}
+}[L];
+
+function tabla(){
+  const rainbow = ["#ff6b8a","#ff9f43","#f5c400","#6bcf63","#3fb6ff","#8e6bff"];
+  let ci = 0, ti = "";
+  for(const ch of PT.ttl){ ti += ch===" " ? " " : `<span style="color:${rainbow[ci++%6]}">${ch}</span>`; }
+  let h = `<div class="title">${ti}</div><div class="sub">${PT.sub}</div>`;
+  h += `<div class="tgrid">`;
+  RAW.forEach(el=>{
+    const long = nm(el).length>10 ? " l":"";
+    h += `<div class="pc cat-${el.c}" style="grid-row:${el.r>8?el.r-0:el.r};grid-column:${el.col}"><span class="n">${el.n}</span><span class="e">${el.e}</span><span class="s">${el.s}</span><span class="nm${long}">${nm(el)}</span></div>`;
+  });
+  const ph = tt.ph;
+  h += `<div class="pc ph2 cat-lan" style="grid-row:6;grid-column:3">${ph[0]}<br>${ph[1]}</div><div class="pc ph2 cat-act" style="grid-row:7;grid-column:3">${ph[2]}<br>${ph[3]}</div>`;
+  h += `<div class="keyp" style="grid-row:1/4;grid-column:3/8"><div class="mini"><span class="n">19</span><span class="e">🍌</span><span class="s">K</span><span class="nm">${nm(byS("K"))}</span></div>
+     <div><h3>${u.keyTitle}</h3><ol>${u.keyItems.map((k,i)=>`<li><b>${i+1}</b>${k}</li>`).join("")}</ol></div></div>`;
+  h += `<div class="mascots" style="grid-row:1/4;grid-column:8/13"><span>🧑‍🔬</span><span class="say">${PT.say}</span><span>⚗️</span></div>`;
+  h += `</div>`;
+  h += `<div class="deco" style="left:14px;top:16px;font-size:64px">🧪</div><div class="deco" style="right:16px;top:12px;font-size:64px">🎈</div>
+        <div class="deco" style="left:30px;top:330px;font-size:44px;display:none">🔋</div>`;
+  h += `<div class="legendp"><h3>${PT.leg}</h3><div class="chips">${CATS.map(c=>`<div class="ch"><span class="sw cat-${c}"></span>${tt.cats[c]}</div>`).join("")}</div></div>`;
+  root.innerHTML = h;
+}
+
+const CPK = {H:["#ffffff"],C:["#4a4a55","#fff"],O:["#ff5a5a"],Na:["#b388ff"],Cl:["#6bd36b"],Si:["#d8b878"],Fe:["#b5651d","#fff"],N:["#5a8dff"]};
+const EXS = [
+ {es:"Agua",eu:"Ura",f:"H₂O",at:[["H",2],["O",1]],em:"💧",bg:"#d7f0ff"},
+ {es:"Sal de mesa",eu:"Mahaiko gatza",f:"NaCl",at:[["Na",1],["Cl",1]],em:"🧂",bg:"#ffe9b8"},
+ {es:"Dióxido de carbono",eu:"Karbono dioxidoa",f:"CO₂",at:[["C",1],["O",2]],em:"🫧",bg:"#e4f7c8"},
+ {es:"Azúcar (glucosa)",eu:"Azukrea (glukosa)",f:"C₆H₁₂O₆",at:[["C",6],["H",12],["O",6]],em:"🍬",bg:"#ffd9c2"},
+ {es:"Oxígeno que respiramos",eu:"Arnasten dugun oxigenoa",f:"O₂",at:[["O",2]],em:"🌿",bg:"#d9f7e6"},
+ {es:"Gas natural",eu:"Gas naturala",f:"CH₄",at:[["C",1],["H",4]],em:"🔥",bg:"#ffe2d0"},
+ {es:"Arena",eu:"Hondarra",f:"SiO₂",at:[["Si",1],["O",2]],em:"🏖️",bg:"#fff0c2"},
+ {es:"Óxido (hierro oxidado)",eu:"Herdoila (burdin oxidatua)",f:"Fe₂O₃",at:[["Fe",2],["O",3]],em:"🔩",bg:"#ffdcc4"},
+ {es:"Bicarbonato de sodio",eu:"Sodio bikarbonatoa",f:"NaHCO₃",at:[["Na",1],["H",1],["C",1],["O",3]],em:"🥄",bg:"#e8e0ff"},
+ {es:"Ácido de limón",eu:"Limoiaren azidoa",f:"C₆H₈O₇",at:[["C",6],["H",8],["O",7]],em:"🍋",bg:"#fff6b8"}
+];
+function elName(s,n){
+  const el = byS(s);
+  if(L==="es"){ const nmx = el.es; return `${n}${PT.of}${nmx.charAt(0).toUpperCase()+nmx.slice(1)} (${s})`; }
+  return `${n} ${el.eu.replace(/a$/,"")} (${s})`;
+}
+function atomHtml(s,n,total){
+  const c = CPK[s]||["#ddd"]; const dark = c[1]==="#fff";
+  const style = `--cpk:${c[0]};${dark?"--tx:#fff":""}`;
+  if(total<=6) return Array.from({length:n},()=>`<i style="${style}">${s}</i>`).join("");
+  return `<i style="${style}">${s}${n>1?`<b>×${n}</b>`:""}</i>`;
+}
+const DISC = {
+ es:[["🔬","1669","Hennig Brand","Fósforo: lo encontró hirviendo orina"],["🎈","1766","Henry Cavendish","Hidrógeno: al quemarse hace agua"],["⛏️","1783","Hermanos Elhuyar","Wolframio (W), en Bergara"],["⚡","1807","Humphry Davy","Sodio y potasio, con electricidad"],["📋","1869","Mendeléyev","Ordenó la tabla y dejó huecos"],["☢️","1898","Marie Curie","Polonio y radio. Dos Nobel"]],
+ eu:[["🔬","1669","Hennig Brand","Fosforoa: pixa irakinez aurkitu zuen"],["🎈","1766","Henry Cavendish","Hidrogenoa: erretzean ura sortzen du"],["🏔️","1783","Elhuyar anaiak","Wolframa (W), Bergaran"],["⚡","1807","Humphry Davy","Sodioa eta potasioa, elektrizitatearekin"],["📋","1869","Mendeleiev","Taula ordenatu zuen eta hutsuneak utzi"],["☢️","1898","Marie Curie","Polonioa eta radioa. Bi Nobel"]]
+}[L];
+function secretos(){
+  const cols = ["#ff6b4a","#f5a800","#2b2d6e"]; let ti = "";
+  PT.sTtl.forEach((p,i)=>{ if(!p) return; const hi=i%2===1; ti += `<span style="color:${hi?["#f5c400","#f5c400","#ff4d4d"][(i-1)/2]:"#fff"}">${p}</span>`; });
+  const mini = RAW.map(el=>`<i class="cat-${el.c}" style="grid-row:${el.r>8?el.r-1:el.r};grid-column:${el.col}"></i>`).join("");
+  let h = `<div class="title">${ti}</div><div class="panels">
+    <div class="panel" style="background:#fff3d6"><h2>${PT.q1}</h2><p>${PT.a1}</p><span class="em">🧱</span></div>
+    <div class="panel" style="background:#fff7bf"><h2>${PT.q2}</h2><p>${PT.a2}</p><span class="em">🤖</span></div>
+    <div class="panel" style="background:#ffe3f1"><h2>${PT.q3}</h2><p>${PT.a3}</p><div class="minit">${mini}</div><span class="em">👩‍🔬</span></div></div>`;
+  h += `<h2 class="exh">${PT.exh}</h2><div class="exgrid">`;
+  EXS.forEach(x=>{
+    const total = x.at.reduce((a,b)=>a+b[1],0);
+    h += `<div class="ex2" style="--bgc:${x.bg}"><h4>${x[L]}</h4><div class="fm">${x.f}</div>
+      <div class="vis"><span class="em">${x.em}</span><span class="at">${x.at.map(([s,n])=>atomHtml(s,n,total)).join("")}</span></div>
+      <div class="tx">${x.at.map(([s,n])=>elName(s,n)).join(PT.join)}</div></div>`;
+  });
+  h += `</div><div class="disc"><h3>🕵️ ${PT.dh}</h3><div class="dgrid">${DISC.map(d=>`<div class="dc"><div class="em">${d[0]}</div><span class="yr">${d[1]}</span><b>${d[2]}</b>${d[3]}</div>`).join("")}</div></div>`;
+  root.innerHTML = h;
+}
+({tabla,secretos})[TYPE]();
+</script>
+</body>
+</html>
