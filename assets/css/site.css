@@ -298,3 +298,24 @@ p.lead{font-size:1.25rem}
   .readbox{gap:14px}
   .bar-row{grid-template-columns:100px 1fr 44px}
 }
+
+/* quiz length picker + progress */
+.lens .len{min-width:130px;min-height:120px;background:#ffe066;font-size:1.1rem}
+.lens .len .sy{font-size:3rem}
+.lens .len small{display:block;font-size:1rem;font-weight:700}
+.progress{height:14px;border:3px solid var(--ink);border-radius:999px;background:#fff;overflow:hidden;margin:0 auto 10px;max-width:520px}
+.progress div{height:100%;background:var(--teal);transition:width .3s}
+
+/* story (atoms) */
+.story{display:grid;gap:14px}
+.step{display:grid;grid-template-columns:auto 1fr;gap:18px;align-items:start}
+.stepn{display:flex;flex-direction:column;align-items:center;gap:6px}
+.stepn b{width:44px;height:44px;border-radius:50%;background:var(--ink);color:#fff;display:grid;place-items:center;font-family:"Fredoka",sans-serif;font-size:1.3rem}
+.stepn span{font-size:2.6rem;line-height:1}
+.step h3{margin:0 0 4px;font-size:1.5rem}
+.step p{margin:0;font-size:1.3rem;line-height:1.5}
+.atomfig{display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.atomfig svg{width:220px;height:220px;flex:none}
+.atomfig ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-size:1.25rem}
+.atomfig li span{font-size:1.6rem;margin-right:6px}
+@media (max-width:640px){.step{grid-template-columns:1fr}.stepn{flex-direction:row}.step h3{font-size:1.3rem}.step p{font-size:1.15rem}}

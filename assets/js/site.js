@@ -188,10 +188,18 @@ document.addEventListener("keydown",e=>{
 });
 
 /* ---------- APRENDE ---------- */
+function atomFigure(){
+  const orb = [0,60,120].map(a=>`<g transform="rotate(${a} 120 120)"><ellipse cx="120" cy="120" rx="100" ry="36" fill="none" stroke="#233142" stroke-width="3" stroke-dasharray="6 5"/><circle cx="220" cy="120" r="9" fill="#4aa8ff" stroke="#233142" stroke-width="3"/></g>`).join("");
+  const nuc = [[110,112],[130,114],[120,130]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="13" fill="#ff5a5a" stroke="#233142" stroke-width="3"/>`).join("");
+  return `<div class="atomfig"><svg viewBox="0 0 240 240" role="img" aria-label="atom">${orb}${nuc}</svg>
+    <ul>${ln.atomLegend.map(([e,t,d])=>`<li><span>${e}</span><b>${t}</b>: ${d}</li>`).join("")}</ul></div>`;
+}
 function renderAprende(){
   const card = (o,c)=>`<div class="fun-card"><h2>${o.e} ${o.h}</h2>${o.p.map(p=>`<p>${p}</p>`).join("")}</div>`;
   $("#view").innerHTML = `
-   <div class="two">${card(ln.what)}${card(ln.how)}${card(ln.use)}</div>
+   <h2 class="sec">⚛️ ${ln.storyH}</h2>
+   <div class="story">${ln.story.map((s,i)=>`<div class="fun-card step"><div class="stepn"><b>${i+1}</b><span>${s.e}</span></div><div><h3>${s.h}</h3><p>${s.p}</p>${s.atom?atomFigure():""}</div></div>`).join("")}</div>
+   <div class="two" style="margin-top:16px">${card(ln.use)}</div>
    <h2 class="sec">🔎 ${tt.hLeer}</h2>
    <div class="fun-card readbox"><div class="ex"><span class="n">19</span><span class="e">🍌</span><span class="s">K</span><span class="nm">${esc(nm(byS("K")))}</span></div>
      <div><p class="lead">${tt.leadLeer}</p><ol class="steps">${tt.steps.map((s,i)=>`<li><b>${i+1}</b><span>${s}</span></li>`).join("")}</ol></div></div>

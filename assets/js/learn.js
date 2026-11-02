@@ -58,3 +58,29 @@ eu:{
   act:"Ia guztiak erradioaktiboak dira. Adibideak: uranioa, plutonioa, torioa."},
  sources:"Izenak RSEQren arabera. Aurkikuntza-datuak eta masa atomikoak ikasgelarako sinplifikatuta."
 }};
+
+/* "From big to small" story: what is an atom, an element, why each has a number, why columns are families. */
+LEARN.es.storyH = "Antes de empezar: ¿qué es un átomo?";
+LEARN.es.atomLegend = [["🔴","Protones","están en el centro"],["🔵","Electrones","giran alrededor, como satélites"]];
+LEARN.es.story = [
+ {e:"🔍",h:"Todo está hecho de piezas diminutas",p:"Todo lo que ves (tu bocadillo, el aire, tu tablet) está hecho de piezas tan pequeñas que no se ven ni con una lupa. Esas piezas se llaman átomos. En el punto final de una frase caben millones de átomos."},
+ {e:"🧱",h:"Hay distintas clases de átomos",p:"Es como los LEGO: hay piezas de muchas clases. Cada clase de átomo se llama elemento. El oxígeno es una clase de átomo. El oro es otra clase. El hierro es otra."},
+ {e:"🔤",h:"Solo hay 118 clases",p:"Con solo 118 clases de átomos se hace todo, igual que con las letras del abecedario se escriben todas las palabras."},
+ {e:"⚛️",h:"¿Cómo es un átomo por dentro?",p:"En el centro tiene unas bolitas que se llaman protones. Alrededor giran otras bolitas más pequeñas, los electrones, como si fueran satélites.",atom:true},
+ {e:"🔢",h:"Cada elemento tiene un número",p:"Lo que hace distinto a cada elemento es cuántos protones tiene en el centro. Ese es su número. El hidrógeno tiene 1 protón: es el número 1. El helio tiene 2: es el número 2. El litio tiene 3... y así hasta el 118."},
+ {e:"🗺️",h:"La tabla periódica es el mapa",p:"Es una tabla que coloca los 118 elementos en orden, del 1 al 118, en filas y columnas. Se lee como un libro: de izquierda a derecha y de arriba abajo."},
+ {e:"👨‍👩‍👧",h:"Las columnas son familias",p:"Los elementos de la misma columna se parecen, como hermanos. Por ejemplo, el helio, el neón y el argón (la última columna) son gases muy tranquilos que casi nunca se juntan con otros. El litio, el sodio y el potasio (la primera columna) son metales blandos que reaccionan con fuerza con el agua."},
+ {e:"⚗️",h:"Los átomos se juntan",p:"Los átomos de distintos elementos se juntan para hacer cosas nuevas. Dos átomos de hidrógeno y uno de oxígeno hacen una gotita de agua. Esas uniones se llaman moléculas. ¡Míralas en Secretos!"}
+];
+LEARN.eu.storyH = "Hasi baino lehen: zer da atomo bat?";
+LEARN.eu.atomLegend = [["🔴","Protoiak","erdian daude"],["🔵","Elektroiak","inguruan ibiltzen dira, satelite bezala"]];
+LEARN.eu.story = [
+ {e:"🔍",h:"Dena pieza txikiz egina dago",p:"Ikusten duzun guztia (zure hamaiketakoa, airea, zure tableta) lupaz ere ikusten ez diren pieza txikiz egina dago. Pieza horiei atomo esaten zaie. Esaldi bateko puntuan milioika atomo sartzen dira."},
+ {e:"🧱",h:"Atomo mota asko daude",p:"LEGOak bezalakoak dira: pieza mota asko daude. Atomo mota bakoitzari elementu esaten zaio. Oxigenoa atomo mota bat da. Urrea beste mota bat da. Burdina beste bat."},
+ {e:"🔤",h:"118 mota baino ez",p:"118 atomo motarekin dena egiten da, abeceko letrekin hitz guztiak idazten diren bezala."},
+ {e:"⚛️",h:"Nolakoa da atomo bat barrutik?",p:"Erdian protoi izeneko bolatxoak ditu. Inguruan bolatxo txikiagoak ibiltzen dira, elektroiak, satelite bezala.",atom:true},
+ {e:"🔢",h:"Elementu bakoitzak zenbaki bat du",p:"Elementu bakoitza desberdina egiten duena erdian zenbat protoi dituen da. Hori da bere zenbakia. Hidrogenoak protoi 1 du: 1. zenbakia da. Helioak 2 ditu: 2. zenbakia da. Litioak 3 ditu... eta horrela 118raino."},
+ {e:"🗺️",h:"Taula periodikoa mapa da",p:"118 elementuak ordenan jartzen dituen taula bat da, 1etik 118ra, errenkada eta zutabetan. Liburu bat bezala irakurtzen da: ezkerretik eskuinera eta goitik behera."},
+ {e:"👨‍👩‍👧",h:"Zutabeak familiak dira",p:"Zutabe bereko elementuak antzekoak dira, senideak bezala. Adibidez, helioa, neona eta argona (azken zutabea) gas lasai-lasaiak dira, ia inoiz beste elementuekin elkartzen ez direnak. Litioa, sodioa eta potasioa (lehen zutabea) metal bigunak dira, urarekin indarrez erreakzionatzen dutenak."},
+ {e:"⚗️",h:"Atomoak elkartu egiten dira",p:"Elementu desberdinetako atomoak elkartzen dira gauza berriak egiteko. Bi hidrogeno atomok eta oxigeno atomo batek ur-tanta bat egiten dute. Elkarte horiei molekula esaten zaie. Ikusi Sekretuak atalean!"}
+];
