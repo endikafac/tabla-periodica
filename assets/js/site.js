@@ -23,7 +23,7 @@ es:{brand:"Tabla Periódica Infantil",sub:"Aprende jugando · 118 elementos y se
  f:{z:"Número atómico",ze:"Electrones",g:"Grupo (columna)",p:"Periodo (fila)",m:"Masa atómica",st:"Estado a 20 ºC",fa:"Familia",d:"Descubierto"},
  st:{s:"Sólido",l:"Líquido",g:"Gas","?":"Desconocido (dura muy poco)"},
  anti:"Se conoce desde la Antigüedad",by:"por",
- usesH:"¿Dónde lo encuentras o para qué sirve?",curioH:"Curiosidad",placeH:"Su sitio en la tabla",molH:"Aparece en estas combinaciones",
+ usesH:"¿Dónde lo encuentras o para qué sirve?",curioH:"Curiosidad",placeH:"Su sitio en la tabla",molH:"Aparece en estas combinaciones",mix:"Mezcla",swipe:"👉 Desliza la tabla hacia los lados para verla entera",size:"Tamaño del texto",cousin:(a,b)=>`${a} dura tan poco que nadie ha podido juntarlo con otros elementos. Pero se parece a su primo ${b}, que está justo encima en la tabla. Mira cómo se junta ${b}:`,kin:b=>`Sus primos de la tabla (${b}) se juntan de forma parecida. Mira:`,
  famH:"Su familia",prev:"◀ Anterior",next:"Siguiente ▶",back:"Volver a la tabla",noMol:"Todavía no tenemos ejemplos de combinaciones con este elemento.",
  colHelp:"Los elementos de la misma columna se parecen, como hermanos.",
  whoH:"¿Quién lo descubrió?",nameH:"Dato",zHelp:"Es el número de protones que tiene en el centro.",
@@ -40,7 +40,7 @@ eu:{brand:"Taula Periodiko Txikia",sub:"Ikasi jolasean · 118 elementu eta sekre
  f:{z:"Zenbaki atomikoa",ze:"Elektroiak",g:"Taldea (zutabea)",p:"Periodoa (errenkada)",m:"Masa atomikoa",st:"Egoera 20 ºC-tan",fa:"Familia",d:"Aurkitua"},
  st:{s:"Solidoa",l:"Likidoa",g:"Gasa","?":"Ezezaguna (oso gutxi irauten du)"},
  anti:"Antzinatik ezagutzen da",by:"-k",
- usesH:"Non aurkitzen duzu edo zertarako balio du?",curioH:"Bitxikeria",placeH:"Taulan duen lekua",molH:"Konbinazio hauetan agertzen da",
+ usesH:"Non aurkitzen duzu edo zertarako balio du?",curioH:"Bitxikeria",placeH:"Taulan duen lekua",molH:"Konbinazio hauetan agertzen da",mix:"Nahastea",swipe:"👉 Irristatu taula alboetara osorik ikusteko",size:"Testuaren tamaina",cousin:(a,b)=>`${a} hain gutxi irauten du, inork ezin izan duela beste elementuekin elkartu. Baina bere lehengusu ${b}ren antzekoa da, taulan ia gainean dagoena. Ikusi ${b} nola elkartzen den:`,kin:b=>`Taulako lehengusuak (${b}) antzera elkartzen dira. Ikusi:`,
  famH:"Bere familia",prev:"◀ Aurrekoa",next:"Hurrengoa ▶",back:"Itzuli taulara",noMol:"Oraindik ez dugu elementu honekin konbinazio-adibiderik.",
  colHelp:"Zutabe bereko elementuak antzekoak dira, senideak bezala.",
  whoH:"Nork aurkitu zuen?",nameH:"Datua",zHelp:"Erdian dituen protoi kopurua da.",
@@ -66,7 +66,8 @@ function shell(){
       <a href="../${L==="es"?"es":"es"}/${PAGE}.html${qs}" class="${L==="es"?"on":""}" lang="es">${S.lang1}</a>
       <a href="../eu/${PAGE}.html${qs}" class="${L==="eu"?"on":""}" lang="eu">${S.lang2}</a>
     </span>
-    <button class="btn t" id="b-print">${S.print}</button>
+    <span class="fsz" role="group" aria-label="${S.size}"><button class="btn" id="fsm" aria-label="${S.size} −">A−</button><button class="btn" id="fsp" aria-label="${S.size} +">A+</button></span>
+    <button class="btn t hide-m" id="b-print">${S.print}</button>
     <a class="btn" href="../index.html" aria-label="home">🏠</a>
   </div>
   <nav class="tabs">${TABS.map(k=>`<a href="${k}.html" ${k===PAGE||(PAGE==="elemento"&&k==="fichas")?'aria-current="page"':""}>${S.tabs[k]}</a>`).join("")}</nav>
@@ -76,6 +77,11 @@ function shell(){
   <div class="modal" id="modal" role="dialog" aria-modal="true"></div>`;
   document.documentElement.lang = L;
   $("#b-print").onclick = ()=>window.print();
+  const FS = [100,112.5,125,140];
+  const setFs = i => { i=Math.max(0,Math.min(FS.length-1,i)); document.documentElement.style.fontSize=FS[i]+"%"; try{localStorage.setItem("tp-fs",i)}catch(e){} return i; };
+  let fi = 1; try{ const s=localStorage.getItem("tp-fs"); if(s!==null) fi=+s; }catch(e){}
+  fi = setFs(fi);
+  $("#fsm").onclick = ()=>{ fi=setFs(fi-1) }; $("#fsp").onclick = ()=>{ fi=setFs(fi+1) };
 }
 
 /* ---------- shared bits ---------- */
@@ -94,13 +100,14 @@ const CPK = {H:["#ffffff"],C:["#4a4a55","#fff"],O:["#ff5a5a"],Na:["#b388ff"],Cl:
 function atoms(m){
   const total = m.at.reduce((a,b)=>a+b[1],0);
   return m.at.map(([s,n])=>{
-    const c = CPK[s]||[byS(s)?"var(--c)":"#ddd"]; const st = `--cpk:${c[0]};${c[1]?"--tx:#fff":""}`;
+    const c = CPK[s]||[`var(--${byS(s).c})`]; const st = `--cpk:${c[0]};${c[1]?"--tx:#fff":""}`;
     if(total<=6) return Array.from({length:n},()=>`<span class="atom" style="${st}">${s}</span>`).join("");
     return `<span class="atom" style="${st}">${s}${n>1?`<b>×${n}</b>`:""}</span>`;
   }).join("");
 }
 function molCard(m){
-  return `<div class="fun-card card molcard" style="--bgc:${m.bg}"><div class="top2"><h3>${m[L].t}</h3><span class="em">${m.em}</span></div>
+  const bg = m.bg || `var(--${byS(m.at[0][0]).c})`;
+  return `<div class="fun-card card molcard" style="--bgc:${bg}"><div class="top2"><h3>${m[L].t}${m.mix?` <small class="mixtag">${S.mix}</small>`:""}</h3><span class="em">${m.em}</span></div>
     <div class="mol">${atoms(m)}<span class="formula">${m.f}</span></div><p>${m[L].p}</p></div>`;
 }
 function famChips(){
@@ -126,11 +133,12 @@ function renderTabla(){
    <section class="fun-card" id="search"><div class="searchbar"><input id="q" type="search" placeholder="${S.ph}" aria-label="${S.ph}" autocomplete="off">
      <button class="btn d" id="all">${S.all} (118)</button></div>
      <div class="fams" id="fams">${famChips()}</div></section>
-   <h2 class="sec">🌈 ${S.tableH}</h2><p class="lead">${S.tableLead}</p>
+   <h2 class="sec">🌈 ${S.tableH}</h2><p class="lead">${S.tableLead}</p><p class="swipehint">${S.swipe}</p>
    <div class="fun-card"><div class="tbl-wrap"><div class="tbl"><div class="grid" id="grid"></div></div></div></div>
    <h2 class="sec">🖼️ ${S.dlH}</h2><p class="lead">${S.dlLead}</p>
    <div class="dl">${files.map((f,i)=>`<a class="fun-card" href="../descargas/${f}" download><img loading="lazy" src="../descargas/${f}" alt=""><span>⬇️ ${i?S.dlSec:S.dlTable} (PNG)</span></a>`).join("")}</div>`;
   drawGrid();
+  if(Q.get("n")){ const c=$(`.cell[data-n="${sel}"]`); if(c) c.scrollIntoView({block:"center",inline:"center"}); }
   $("#q").oninput = e => { query = e.target.value.trim(); drawGrid(); };
   $("#q").onkeydown = e => { if(e.key==="Enter"){ const f=RAW.find(matches); if(f&&query){openModal(f.n);} } };
   $("#all").onclick = () => { query=""; focus=null; $("#q").value=""; syncChips(); drawGrid(); };
@@ -225,6 +233,23 @@ function renderFichas(){
 }
 
 /* ---------- ELEMENTO ---------- */
+function relatives(el){
+  if(el.n>=57&&el.n<=71) return [RAW[el.n-2],RAW[el.n]].filter(x=>x&&x.n>=57&&x.n<=71);
+  if(el.n>=89&&el.n<=103) return [RAW[el.n-2],RAW[el.n]].filter(x=>x&&x.n>=89&&x.n<=103);
+  const out = [];
+  const up = RAW.find(x=>x.col===el.col&&x.r===el.r-1&&x.r<=7);
+  const dn = RAW.find(x=>x.col===el.col&&x.r===el.r+1&&x.r<=7);
+  if(up) out.push(up); if(dn) out.push(dn);
+  if(!out.length){ const nb=RAW.find(x=>x.r===el.r&&Math.abs(x.col-el.col)===1); if(nb) out.push(nb); }
+  return out.slice(0,2);
+}
+function swipeNav(p,nx){
+  let x0=null,y0=null;
+  document.addEventListener("touchstart",e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});
+  document.addEventListener("touchend",e=>{ if(x0===null)return; const dx=e.changedTouches[0].clientX-x0, dy=e.changedTouches[0].clientY-y0; x0=null;
+    if(Math.abs(dx)>80&&Math.abs(dx)>Math.abs(dy)*2) location.href="elemento.html?n="+(dx<0?nx:p); },{passive:true});
+  document.addEventListener("keydown",e=>{ if(e.key==="ArrowRight") location.href="elemento.html?n="+nx; if(e.key==="ArrowLeft") location.href="elemento.html?n="+p; });
+}
 function renderElemento(){
   let n = +Q.get("n"); if(Q.get("s")){const e=byS(Q.get("s")); if(e) n=e.n}
   if(!(n>=1&&n<=118)) n = 1;
@@ -234,11 +259,18 @@ function renderElemento(){
   const group = (el.n>=57&&el.n<=71)||(el.n>=89&&el.n<=103) ? "—" : el.col;
   const disc = fa.y==="a" ? S.anti : `${fa.y}${fa.w ? ` · ${who(fa.w)}`:""}`;
   const uses = rich ? rich.u[L] : [`${el.e} ${el.h[L]}`];
-  const mols = MOLS.filter(m=>m.at.some(a=>a[0]===el.s));
+  const hasEl = k => ALLMOLS.filter(m=>m.at.some(a=>a[0]===k));
+  const mols = hasEl(el.s);
+  let kin = [], kinMols = [];
+  if(COUSIN[el.s]){ kin=[byS(COUSIN[el.s])]; }
+  else if(mols.length<2){ kin = relatives(el); }
+  const addKin = k => hasEl(k.s).forEach(m=>{ if(!mols.includes(m)&&!kinMols.includes(m)&&kinMols.length<2) kinMols.push(m); });
+  kin.forEach(addKin);
+  if(mols.length+kinMols.length<2) kin.forEach(k=>relatives(k).forEach(addKin));
+  const pv = RAW[(n===1?118:n-1)-1], nx = RAW[(n===118?1:n+1)-1];
   const mini = RAW.map(x=>`<a class="cat-${x.c}${x.n===el.n?" me":""}" href="elemento.html?n=${x.n}" style="grid-row:${x.r>8?x.r-1:x.r};grid-column:${x.col}" title="${esc(nm(x))}" aria-label="${esc(nm(x))}">${x.s}</a>`).join("");
   const stateTxt = S.st[fa.st];
   $("#view").innerHTML = `
-   <a class="btn" href="tabla.html?n=${el.n}">← ${S.back}</a>
    <div class="fun-card hero cat-${el.c}" style="margin-top:14px"><div><div class="emo">${el.e}</div></div>
      <div><span class="num">#${el.n}</span><div class="sym">${el.s}</div><h1>${esc(nm(el))}</h1><p class="hint">${esc(el.h[L])}</p>
        <div class="acts" style="display:flex;gap:10px;flex-wrap:wrap"><span class="chip cat-${el.c}" style="cursor:default">${tt.cats[el.c]}</span><button class="btn" id="sk">${S.speak}</button></div></div></div>
@@ -258,39 +290,16 @@ function renderElemento(){
    <h2 class="sec">🎨 ${S.famH}</h2><div class="fun-card cat-${el.c}" style="background:var(--c)"><b class="fun">${catShort(el.c)}</b><p style="margin:4px 0 0">${ln.fam[el.c]}</p></div>
    <h2 class="sec">🧩 ${S.placeH}</h2><div class="fun-card"><div class="minipt">${mini}</div><p style="margin:10px 0 0">${S.colHelp}</p></div>
    <h2 class="sec">⚗️ ${S.molH}</h2>
-   ${mols.length?`<div class="cards">${mols.map(molCard).join("")}</div>`:`<p class="lead">${S.noMol}</p>`}
-   <div class="nav2"><a class="btn" href="elemento.html?n=${n===1?118:n-1}">${S.prev}</a><a class="btn" href="elemento.html?n=${n===118?1:n+1}">${S.next}</a></div>`;
+   ${mols.length?`<div class="cards">${mols.map(molCard).join("")}</div>`:""}
+   ${kinMols.length?`<p class="lead" style="margin-top:14px">${COUSIN[el.s]?S.cousin(nm(el),nm(kin[0])):S.kin(kin.map(nm).join(" / "))}</p><div class="cards">${kinMols.map(molCard).join("")}</div>`:""}
+   <nav class="stickynav" aria-label="nav"><a class="btn" href="tabla.html?n=${el.n}">🏠 ${S.back}</a><a class="btn y" href="elemento.html?n=${pv.n}" rel="prev">◀ ${pv.e} ${pv.s}</a><a class="btn y" href="elemento.html?n=${nx.n}" rel="next">${nx.s} ${nx.e} ▶</a></nav>`;
+  document.body.classList.add("has-sticky");
+  swipeNav(pv.n,nx.n);
   speakBtn(el,"#sk");
 }
 
 /* ---------- QUIZ ---------- */
-const POOL = ["H","He","C","O","F","Na","Al","Si","S","Cl","K","Ca","Fe","Cu","Ag","Au","Hg","Pb","Ne","I","Zn","Se","Mg","Sn","Ti","Pt","Ba","W"];
-let score = 0, last = null;
-function blankHint(el){
-  const name = nm(el), stem = name.length>4 ? name.slice(0,-1) : name;
-  const re = new RegExp(stem.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"[\\p{L}]*","giu");
-  return el.h[L].replace(re,u.blank);
-}
-function renderQuiz(){
-  $("#view").innerHTML = `<h2 class="sec">🎮 ${u.quizH}</h2><p class="lead">${S.quizLead}</p><div class="fun-card quiz" id="quiz"></div>`;
-  nextQ();
-}
-function nextQ(){
-  let el; do{ el = byS(POOL[Math.floor(Math.random()*POOL.length)]) }while(last===el.s);
-  last = el.s;
-  const opts = [el]; while(opts.length<3){const o=byS(POOL[Math.floor(Math.random()*POOL.length)]); if(!opts.includes(o))opts.push(o)}
-  opts.sort(()=>Math.random()-.5);
-  const q = $("#quiz");
-  q.innerHTML = `<div class="score">⭐ ${u.score}: ${score}</div><div class="bigem">${el.e}</div><div class="q">${u.quizQ}</div><div class="hintq">${esc(blankHint(el))}</div>
-    <div class="opts">${opts.map(o=>`<button class="opt cat-${o.c}" data-s="${o.s}"><span class="sy">${o.s}</span>${esc(nm(o))}</button>`).join("")}</div><div class="feedback" id="fb"></div>`;
-  q.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{
-    if(b.dataset.s===el.s){
-      score++; b.classList.add("ok"); confetti();
-      $("#fb").innerHTML = `${u.ok[Math.floor(Math.random()*u.ok.length)]} <a class="btn y" href="elemento.html?n=${el.n}">${S.more}</a> <button class="btn" id="nx">${u.next2} ▶</button>`;
-      q.querySelectorAll(".opt").forEach(x=>x.disabled=true); $("#nx").onclick = nextQ;
-    } else { b.classList.add("no"); $("#fb").textContent = u.no; setTimeout(()=>b.classList.remove("no"),400); }
-  });
-}
+function renderQuiz(){ renderQuizPage({L,S,RAW,byS,nm,esc,$,confetti,RICH,ALLMOLS,MOLS,FACTS,CATS,u}); }
 
 shell();
 ({tabla:renderTabla,aprende:renderAprende,secretos:renderSecretos,fichas:renderFichas,elemento:renderElemento,quiz:renderQuiz})[PAGE]();

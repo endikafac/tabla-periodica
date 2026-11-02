@@ -243,3 +243,58 @@ body[data-page=tabla] .tbl{min-width:900px}
 .mcur{margin:0 0 12px;font-size:1.02rem}
 .macts{display:flex;gap:8px;flex-wrap:wrap}
 @media (max-width:700px){.mbox{grid-template-columns:1fr;text-align:center}.mleft{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}.memo{font-size:4.5rem}.msym{font-size:3.4rem}.macts{justify-content:center}.mfam{margin-right:0}}
+
+/* ---- text size, sticky nav, quiz extras ---- */
+html{font-size:112.5%;-webkit-text-size-adjust:100%}
+.fsz{display:inline-flex;gap:6px}
+.fsz .btn{padding:5px 10px}
+.mixtag{font-family:"Quicksand",sans-serif;font-size:.7rem;background:#fff;border:2px solid var(--ink);border-radius:999px;padding:0 8px;vertical-align:middle}
+.stickynav{position:fixed;left:0;right:0;bottom:0;z-index:35;display:flex;gap:10px;padding:10px 12px calc(10px + env(safe-area-inset-bottom));background:#fff;border-top:4px solid var(--ink)}
+.stickynav .btn{flex:1;justify-content:center;font-size:1.1rem;padding:12px 8px;min-height:52px}
+body.has-sticky{padding-bottom:92px}
+body.has-sticky .foot{margin-bottom:0}
+.qstat{display:flex;gap:10px 22px;justify-content:center;flex-wrap:wrap;font-family:"Fredoka",sans-serif;font-size:1.1rem;margin-bottom:6px}
+.fbtns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.quiz .q{font-size:clamp(1.5rem,3.6vw,2.2rem)}
+.quiz .hintq{font-size:1.5rem;font-weight:700}
+.opt{font-size:1.3rem}
+.macts{position:sticky;bottom:-4px;background:var(--c,#fff);padding:8px 0 2px}
+.swipehint{display:none;text-align:center;font-weight:700;margin:0 0 8px}
+p.lead{font-size:1.25rem}
+.card p,.two .fun-card p,.use,.fact b{font-size:1.2rem}
+.steps li{font-size:1.25rem}
+
+/* ---- mobile ---- */
+@media (max-width:640px){
+  html{font-size:106.25%}
+  .top{padding:8px 10px 6px}
+  .top .row{gap:8px}
+  .brand small,.hide-m{display:none!important}
+  .brand h1{font-size:1.05rem}
+  .logo{width:38px;height:38px;font-size:1.3rem;border-radius:12px}
+  .seg a{padding:5px 10px;font-size:.9rem}
+  .btn{padding:6px 10px}
+  .tabs a{padding:8px 12px;font-size:.95rem}
+  main,body[data-page=tabla] main{padding:10px}
+  .tbl{min-width:1000px}
+  .swipehint{display:block}
+  .fams{grid-template-columns:1fr 1fr}
+  .chip{font-size:.8rem;padding:5px 8px}
+  .facts{grid-template-columns:1fr 1fr}
+  .fact b{font-size:1.1rem}
+  .cards,.two,.uses,.dl{grid-template-columns:1fr}
+  .opts{flex-direction:column;align-items:stretch}
+  .opt{min-width:0;min-height:64px;width:100%}
+  .modal{padding:0;align-items:stretch}
+  .mbox{border-radius:0;max-height:none;min-height:100%;width:100%;border-width:0;box-shadow:none;padding:14px 14px 10px}
+  .mx{top:8px;right:8px}
+  .macts{position:sticky;bottom:0;background:var(--c,#fff);padding:10px 0;border-top:3px solid var(--ink);justify-content:center}
+  .macts .btn{flex:1 1 40%;justify-content:center}
+  .hero .emo{font-size:6rem}
+  .stickynav{padding:8px 8px calc(8px + env(safe-area-inset-bottom));gap:6px}
+  .stickynav .btn{font-size:.95rem;padding:10px 4px}
+  .time{margin-left:6px;padding-left:14px}
+  .time .it::before{left:-27px}
+  .readbox{gap:14px}
+  .bar-row{grid-template-columns:100px 1fr 44px}
+}
