@@ -62,7 +62,7 @@ p.lead{font-size:1.12rem;margin:0 0 10px}
 /* ---------- periodic table ---------- */
 .tbl-wrap{overflow-x:auto;padding:6px 4px 14px}
 .tbl{container-type:inline-size;min-width:900px}
-.grid{--u:calc(100cqw/18);display:grid;grid-template-columns:repeat(18,1fr);gap:calc(var(--u)*.05);grid-template-rows:repeat(7,auto) calc(var(--u)*.3) repeat(2,auto)}
+.grid{display:grid;grid-template-columns:repeat(18,1fr);gap:calc(var(--u)*.05);grid-template-rows:repeat(7,auto) calc(var(--u)*.3) repeat(2,auto)}
 .cell{position:relative;aspect-ratio:1/1.06;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--c);
   border:2px solid var(--ink);border-radius:calc(var(--u)*.14);box-shadow:2px 2px 0 var(--ink);cursor:pointer;padding:0;transition:transform .12s}
 .cell:hover,.cell:focus-visible{transform:scale(1.18) translateY(-3px);z-index:20;box-shadow:0 8px 16px #0003,3px 3px 0 var(--ink);outline:0}
@@ -380,7 +380,8 @@ body.has-sticky{padding-bottom:64px}
   .tbl,body[data-page=tabla] .tbl{min-width:0}
   .swipehint{display:none}
 }
-@container (max-width:880px){ .cell .nm{display:none} .cell .s{margin-top:calc(var(--u)*.2)} }
+.tbl.narrow .cell .nm{display:none}
+.tbl.narrow .cell .s{margin-top:calc(var(--u)*.2)}
 @media (max-width:900px){
   .brand small,.hide-m{display:none!important}
   .fams{display:flex;overflow-x:auto;gap:6px;padding-bottom:4px;scrollbar-width:none}
@@ -404,3 +405,20 @@ body.has-sticky{padding-bottom:64px}
   .mfoot .btn{min-height:38px;padding:3px 8px;font-size:.88rem}
   .mfoot .mnav{min-width:52px}
 }
+
+/* ---- accessibility ---- */
+.brand .bt{display:block;font-family:"Fredoka",sans-serif;font-weight:700;font-size:1.15rem;line-height:1.05}
+@media (max-width:640px){.brand .bt{display:none}}
+:focus-visible{outline:4px solid var(--teal);outline-offset:2px}
+.cell:focus-visible{outline-offset:1px}
+.seg{overflow:visible}
+.seg a:first-child{border-radius:999px 0 0 999px}.seg a:last-child{border-radius:0 999px 999px 0}
+.seg a,.fsz .btn,.top .btn,.brand{position:relative}
+.seg a,.top .btn{min-height:34px;display:inline-flex;align-items:center}
+.seg a::after,.fsz .btn::after,.top .btn::after,.brand::after{content:"";position:absolute;inset:-5px}
+.tabs a{min-height:38px;display:inline-flex;align-items:center}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+  .confetti{display:none}
+}
+.say{padding:3px 10px;font-size:.95rem;margin-top:8px}

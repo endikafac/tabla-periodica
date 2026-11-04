@@ -61,7 +61,7 @@ function shell(){
   const qs = location.search;
   document.body.innerHTML = `
   <header class="top"><div class="row">
-    <a class="brand" href="tabla.html"><span class="logo">🧪</span><span><h1>${S.brand}</h1><small>${S.sub}</small></span></a>
+    <a class="brand" href="tabla.html"><span class="logo">🧪</span><span><span class="bt">${S.brand}</span><small>${S.sub}</small></span></a>
     <span class="seg" role="group" aria-label="Idioma / Hizkuntza">
       <a href="../${L==="es"?"es":"es"}/${PAGE}.html${qs}" class="${L==="es"?"on":""}" lang="es">${S.lang1}</a>
       <a href="../eu/${PAGE}.html${qs}" class="${L==="eu"?"on":""}" lang="eu">${S.lang2}</a>
@@ -157,8 +157,12 @@ function drawGrid(){
     <div><h3>${u.keyTitle}</h3><ol>${u.keyItems.map((k,i)=>`<li><b>${i+1}</b>${k}</li>`).join("")}</ol></div></div>
     <div class="hello"><span class="big">🧑‍🔬</span><span>${S.hello}</span></div>`;
   g.innerHTML = h;
+  fitTable();
   g.querySelectorAll(".cell").forEach(b=>b.onclick=()=>openModal(+b.dataset.n));
 }
+/* table unit: one column width (works without CSS container units, e.g. older iPads) */
+function fitTable(){ const t=$(".tbl"); if(!t) return; const w=t.clientWidth; if(!w) return; t.style.setProperty("--u",(w/18)+"px"); t.classList.toggle("narrow",w<880); }
+addEventListener("resize",fitTable);
 function openModal(n){
   sel = n<1?118:n>118?1:n;
   drawGrid();
@@ -190,6 +194,19 @@ document.addEventListener("keydown",e=>{
 });
 
 /* ---------- APRENDE ---------- */
+/* read-aloud buttons for the story cards (shown only if the device has a voice in this language) */
+function bindStorySpeech(){
+  if(!("speechSynthesis" in window)) return;
+  const set = () => {
+    const v = speechSynthesis.getVoices().find(v=>v.lang.toLowerCase().startsWith(L));
+    document.querySelectorAll(".say[data-i]").forEach(b=>{
+      b.classList.toggle("hidden",!v); if(!v) return;
+      const s = ln.story[+b.dataset.i];
+      b.onclick = () => { speechSynthesis.cancel(); const m = new SpeechSynthesisUtterance(s.h+". "+s.p); m.voice=v; m.lang=v.lang; speechSynthesis.speak(m); };
+    });
+  };
+  set(); speechSynthesis.onvoiceschanged = set;
+}
 function atomFigure(){
   const orb = [0,60,120].map(a=>`<g transform="rotate(${a} 120 120)"><ellipse cx="120" cy="120" rx="100" ry="36" fill="none" stroke="#233142" stroke-width="3" stroke-dasharray="6 5"/><circle cx="220" cy="120" r="9" fill="#4aa8ff" stroke="#233142" stroke-width="3"/></g>`).join("");
   const nuc = [[110,112],[130,114],[120,130]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="13" fill="#ff5a5a" stroke="#233142" stroke-width="3"/>`).join("");
@@ -200,7 +217,7 @@ function renderAprende(){
   const card = (o,c)=>`<div class="fun-card"><h2>${o.e} ${o.h}</h2>${o.p.map(p=>`<p>${p}</p>`).join("")}</div>`;
   $("#view").innerHTML = `
    <h2 class="sec">⚛️ ${ln.storyH}</h2>
-   <div class="story">${ln.story.map((s,i)=>`<div class="fun-card step"><div class="stepn"><b>${i+1}</b><span>${s.e}</span></div><div><h3>${s.h}</h3><p>${s.p}</p>${s.atom?atomFigure():""}</div></div>`).join("")}</div>
+   <div class="story">${ln.story.map((s,i)=>`<div class="fun-card step"><div class="stepn"><b>${i+1}</b><span>${s.e}</span></div><div><h3>${s.h}</h3><p>${s.p}</p>${s.atom?atomFigure():""}<button class="btn say hidden" data-i="${i}">${S.speak}</button></div></div>`).join("")}</div>
    <div class="two" style="margin-top:16px">${card(ln.use)}</div>
    <h2 class="sec">🔎 ${tt.hLeer}</h2>
    <div class="fun-card readbox"><div class="ex"><span class="n">19</span><span class="e">🍌</span><span class="s">K</span><span class="nm">${esc(nm(byS("K")))}</span></div>
@@ -313,5 +330,7 @@ function renderQuiz(){ renderQuizPage({L,S,RAW,byS,nm,esc,$,confetti,RICH,ALLMOL
 
 shell();
 ({tabla:renderTabla,aprende:renderAprende,secretos:renderSecretos,fichas:renderFichas,elemento:renderElemento,quiz:renderQuiz})[PAGE]();
+if(PAGE==="aprende") bindStorySpeech();
+{ const h=document.querySelector("h2.sec"); if(h&&PAGE!=="elemento") h.setAttribute("aria-level","1"); }
 if(PAGE==="tabla"||PAGE==="aprende"||PAGE==="secretos"||PAGE==="fichas"||PAGE==="quiz") document.title = `${S.tabs[PAGE].replace(/^\S+\s/,"")} · ${S.brand}`;
 })();

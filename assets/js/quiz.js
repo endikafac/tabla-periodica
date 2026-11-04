@@ -43,7 +43,7 @@ function renderQuizPage(ctx){
   const kids = QKIDS.map(byS);
   const blank = (txt,el) => {
     const name = nm(el), stem = name.length>4 ? name.slice(0,-1) : name;
-    return txt.replace(new RegExp("(?<![\\p{L}])"+stem.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"[\\p{L}]*","giu"),"___");
+    return txt.replace(new RegExp("(^|[^\\p{L}])"+stem.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"[\\p{L}]*","giu"),"$1___");
   };
   const mk = (id,type,build,tier) => ({id,type,build,tier:tier||"easy"});
   const bank = [];
