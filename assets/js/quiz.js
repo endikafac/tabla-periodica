@@ -27,10 +27,10 @@ const QFAMOK = ["He","Ne","Ar","Li","Na","K","Fe","Cu","Au","Ag","Cl","F","I","C
 const QEASYMOL = ["H₂O","NaCl","CO₂","O₂","CH₄","SiO₂","Fe₂O₃","CaCO₃"];
 const QX = {
 es:{pick:"¿Cuántas preguntas quieres?",go:"¡Vamos!",qn:"Pregunta",of:"de",endH:"¡Se acabó!",again:"Jugar otra vez",change:"Cambiar número de preguntas",
- r3:"¡Eres un genio de los elementos!",r2:"¡Muy bien! Sigue practicando y serás un genio.",r1:"¡Buen intento! Mira las fichas y vuelve a probar.",right:"aciertos",questions:"preguntas",know:"¿Sabías que…?",lab:"Es un elemento fabricado en un laboratorio. Dura muy poco tiempo (a veces solo unos segundos), ¡por eso casi nadie lo ve!",modeH:"¿Qué elementos quieres?",modes:[["easy","🌟","Elementos conocidos","Oxígeno, hierro, oro…"],["rare","🔬","Elementos raros","Neptunio, europio, francio… ¡con explicaciones!"],["mix","🎲","Todo mezclado","De los fáciles a los raros"]],listen:"🔊 Escuchar",
+ r3:"¡Eres un genio de los elementos!",r2:"¡Muy bien! Sigue practicando y serás un genio.",r1:"¡Buen intento! Mira las fichas y vuelve a probar.",right:"aciertos",questions:"preguntas",know:"¿Sabías que…?",numof:"¿Qué número tiene {N} en la tabla?",lab:"Es un elemento fabricado en un laboratorio. Dura muy poco tiempo (a veces solo unos segundos), ¡por eso casi nadie lo ve!",modeH:"¿Qué elementos quieres?",modes:[["easy","🌟","Elementos conocidos","Oxígeno, hierro, oro…"],["rare","🔬","Elementos raros","Neptunio, europio, francio… ¡con explicaciones!"],["mix","🎲","Todo mezclado","De los fáciles a los raros"]],listen:"🔊 Escuchar",
  sub:"Preguntas para todos: fáciles y divertidas"},
 eu:{pick:"Zenbat galdera nahi dituzu?",go:"Goazen!",qn:"Galdera",of:"/",endH:"Amaitu da!",again:"Berriro jolastu",change:"Galdera kopurua aldatu",
- r3:"Elementuen jenioa zara!",r2:"Oso ondo! Segi praktikatzen eta jenioa izango zara.",r1:"Saiakera ona! Begiratu fitxei eta saiatu berriro.",right:"asmatu",questions:"galdera",know:"Ba al zenekien…?",lab:"Laborategian egindako elementua da. Oso denbora gutxi irauten du (batzuetan segundo batzuk bakarrik), horregatik ia inork ez du ikusten!",modeH:"Zein elementu nahi dituzu?",modes:[["easy","🌟","Elementu ezagunak","Oxigenoa, burdina, urrea…"],["rare","🔬","Elementu arraroak","Neptunioa, europioa, frantzioa… azalpenekin!"],["mix","🎲","Dena nahasita","Errazetatik arraroetara"]],listen:"🔊 Entzun",
+ r3:"Elementuen jenioa zara!",r2:"Oso ondo! Segi praktikatzen eta jenioa izango zara.",r1:"Saiakera ona! Begiratu fitxei eta saiatu berriro.",right:"asmatu",questions:"galdera",know:"Ba al zenekien…?",numof:"Zein zenbaki du {N}k taulan?",lab:"Laborategian egindako elementua da. Oso denbora gutxi irauten du (batzuetan segundo batzuk bakarrik), horregatik ia inork ez du ikusten!",modeH:"Zein elementu nahi dituzu?",modes:[["easy","🌟","Elementu ezagunak","Oxigenoa, burdina, urrea…"],["rare","🔬","Elementu arraroak","Neptunioa, europioa, frantzioa… azalpenekin!"],["mix","🎲","Dena nahasita","Errazetatik arraroetara"]],listen:"🔊 Entzun",
  sub:"Galderak denentzat: errazak eta dibertigarriak"}
 };
 
@@ -84,6 +84,11 @@ function renderQuizPage(ctx){
   });
   QGEN[L].forEach((g,i)=>bank.push(mk("g:"+i,"gen",()=>({big:"🤔",q:g[0],opts:[g[1],g[2],g[3]].map((l,j)=>({l,c:j===0})),el:null}))));
   QTF[L].forEach((g,i)=>bank.push(mk("t:"+i,"tf",()=>({big:"✅❌",q:q.tf,hint:g[0],opts:[{l:q.t,c:!!g[1]},{l:q.f,c:!g[1]}],el:null,noshuffle:true}))));
+  QGEN2[L].forEach((g,i)=>bank.push(mk("g2:"+i,"gen",()=>({big:"🤔",q:g[0],opts:[g[1],g[2],g[3]].map((l,j)=>({l,c:j===0})),el:null,x:g[4]}))));
+  QTF2[L].forEach((g,i)=>bank.push(mk("t2:"+i,"tf",()=>({big:"✅❌",q:q.tf,hint:g[0],opts:[{l:q.t,c:!!g[1]},{l:q.f,c:!g[1]}],el:null,noshuffle:true,x:g[2]}))));
+  kids.filter(e=>e.n<=20).forEach(el=>{
+    bank.push(mk("no:"+el.s,"numof",()=>{ const nums=[el.n,...pick(Array.from({length:20},(_,i)=>i+1),2,el.n)]; return {big:el.e,q:x.numof.replace("{N}",L==="es"?cap(nm(el)):nm(el)),opts:nums.map(v=>({l:String(v),c:v===el.n})),el}; }));
+  });
 
   /* rare elements: same simple questions, but every answer comes with a kid-friendly explanation */
   const rareHintPool = RAW.filter(e=>!QKIDS.includes(e.s)&&e.n<=92);
@@ -162,7 +167,7 @@ function renderQuizPage(ctx){
         btns.forEach((v,i)=>{v.disabled=true; if(opts[i].c) v.classList.add("ok");});
         const right = opts.find(o=>o.c).l;
         const last = asked>=total;
-        $("#fb").innerHTML = `${ok?q.ok[Math.floor(Math.random()*q.ok.length)]:`${q.answer} <b>${esc(right)}</b>`}<div class="fbtns"><button class="btn y" id="nx">${last?x.endH:q.next}</button>${d.el?`<a class="btn" href="elemento.html?n=${d.el.n}">${q.sheet} ${d.el.e}</a>`:""}</div>${d.el?`<div class="expl">💡 <b>${x.know}</b> ${expl(d.el)}</div>`:""}`;
+        $("#fb").innerHTML = `${ok?q.ok[Math.floor(Math.random()*q.ok.length)]:`${q.answer} <b>${esc(right)}</b>`}<div class="fbtns"><button class="btn y" id="nx">${last?x.endH:q.next}</button>${d.el?`<a class="btn" href="elemento.html?n=${d.el.n}">${q.sheet} ${d.el.e}</a>`:""}</div>${d.el?`<div class="expl">💡 <b>${x.know}</b> ${expl(d.el)}</div>`:d.x?`<div class="expl">💡 ${esc(d.x)}</div>`:""}`;
         $("#nx").onclick = next; $("#nx").focus({preventScroll:true});
       };
       btns.forEach((v,i)=>v.onclick=()=>{

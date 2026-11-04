@@ -1,9 +1,9 @@
 /* Offline support: precache the app shell, then serve from cache and refresh in the background. */
-const CACHE = "tp-v1";
+const CACHE = "tp-v2";
 const PAGES = ["tabla","aprende","secretos","fichas","quiz","elemento"];
 const SHELL = [
   "index.html", "manifest.webmanifest", "assets/icon.svg", "assets/icon-192.png", "assets/css/site.css",
-  ...["data","content","ui","facts","rich","molecules","comps","quiz","learn","site"].map(n=>`assets/js/${n}.js`),
+  ...["data","content","ui","facts","rich","molecules","comps","quiz-more","quiz","learn","site"].map(n=>`assets/js/${n}.js`),
   ...["fredoka-1","fredoka-2","fredoka-3","quicksand-1","quicksand-2"].map(n=>`assets/fonts/${n}.ttf`),
   ...["es","eu"].flatMap(l=>PAGES.map(p=>`${l}/${p}.html`))
 ];
