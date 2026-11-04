@@ -300,7 +300,7 @@ function renderElemento(){
    <h2 class="sec">⚗️ ${S.molH}</h2>
    ${mols.length?`<div class="cards">${mols.map(molCard).join("")}</div>`:""}
    ${kinMols.length?`<p class="lead" style="margin-top:14px">${COUSIN[el.s]?S.cousin(nm(el),nm(kin[0])):S.kin(kin.map(nm).join(" / "))}</p><div class="cards">${kinMols.map(molCard).join("")}</div>`:""}
-   <nav class="stickynav" aria-label="nav"><a class="btn" href="tabla.html?n=${el.n}">🏠 ${S.back}</a><a class="btn y" href="elemento.html?n=${pv.n}" rel="prev">◀ ${pv.e} ${pv.s}</a><a class="btn y" href="elemento.html?n=${nx.n}" rel="next">${nx.s} ${nx.e} ▶</a></nav>`;
+   <nav class="stickynav" aria-label="nav"><a class="btn" href="tabla.html?n=${el.n}">🏠 ${S.tabs.tabla.replace(/^\S+\s/,"")}</a><a class="btn y" href="elemento.html?n=${pv.n}" rel="prev">◀ ${pv.e} ${pv.s}</a><a class="btn y" href="elemento.html?n=${nx.n}" rel="next">${nx.s} ${nx.e} ▶</a></nav>`;
   document.body.classList.add("has-sticky");
   swipeNav(pv.n,nx.n);
   speakBtn(el,"#sk");
