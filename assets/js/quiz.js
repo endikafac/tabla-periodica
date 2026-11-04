@@ -86,6 +86,38 @@ function renderQuizPage(ctx){
   QTF[L].forEach((g,i)=>bank.push(mk("t:"+i,"tf",()=>({big:"✅❌",q:q.tf,hint:g[0],opts:[{l:q.t,c:!!g[1]},{l:q.f,c:!g[1]}],el:null,noshuffle:true}))));
   QGEN2[L].forEach((g,i)=>bank.push(mk("g2:"+i,"gen",()=>({big:"🤔",q:g[0],opts:[g[1],g[2],g[3]].map((l,j)=>({l,c:j===0})),el:null,x:g[4]}))));
   QTF2[L].forEach((g,i)=>bank.push(mk("t2:"+i,"tf",()=>({big:"✅❌",q:q.tf,hint:g[0],opts:[{l:q.t,c:!!g[1]},{l:q.f,c:!g[1]}],el:null,noshuffle:true,x:g[2]}))));
+  /* table-focused questions: order, families, Latin symbols, drawings, comparisons */
+  const q2 = QX2[L], who2 = el => ({name:cap(nm(el)),n:el.n});
+  RAW.filter(e=>e.n<=117).forEach(el=>{
+    const tier = el.n<=30 ? "easy" : "rare", nx = RAW[el.n];
+    bank.push(mk("nx:"+el.s,"next",()=>{ const near=RAW.filter(e=>Math.abs(e.n-nx.n)<=4&&e!==nx&&e!==el); const o=[nx,...pick(near,2,nx)];
+      return {big:"➡️",q:q2.next.replace("{n}",nm(el)),opts:o.map(v=>({l:cap(nm(v)),c:v===nx,cat:v.c})),el:nx,x:q2.ordx(who2(nx),who2(el))}; },tier));
+    if(el.n>=2&&el.n<=30){ const pv = RAW[el.n-2];
+      bank.push(mk("pv:"+el.s,"prev",()=>{ const near=RAW.filter(e=>Math.abs(e.n-pv.n)<=4&&e!==pv&&e!==el); const o=[pv,...pick(near,2,pv)];
+        return {big:"⬅️",q:q2.prev.replace("{n}",nm(el)),opts:o.map(v=>({l:cap(nm(v)),c:v===pv,cat:v.c})),el:pv,x:q2.ordp(who2(pv),who2(el))}; },"easy")); }
+  });
+  ["nob","alk","hal","non","tra"].forEach(c=>{
+    kids.filter(e=>e.c===c&&e.s!=="Hg").forEach(el=>{
+      bank.push(mk("ff:"+el.s,"fam2",()=>{ const OKC={nob:["alk","tra","pos","alke"],alk:["non","hal","nob"],hal:["alk","tra","pos","alke"],non:["alk","tra","pos","alke"],tra:["non","hal","nob"]}[c]; const others=kids.filter(e=>OKC.includes(e.c)); const o=[el,...pick(others,2,el)];
+        return {big:"🎨",q:q2.fam.replace("{f}",u.short[c]),opts:o.map(v=>({l:cap(nm(v)),c:v===el,cat:v.c})),el,x:cap(nm(el))+": "+u.short[c]+"."}; }));
+    });
+  });
+  Object.keys(LATIN).forEach(s=>{
+    const el = byS(s);
+    bank.push(mk("lt:"+s,"latin",()=>{ const o=[LATIN[s],...pick(Object.values(LATIN),2,LATIN[s])];
+      return {big:el.s,q:q2.lat.replace("{s}",el.s),opts:o.map(l=>({l,c:l===LATIN[s]})),el,x:q2.latx(cap(nm(el)),LATIN[s])}; }));
+  });
+  kids.forEach(el=>{
+    bank.push(mk("em:"+el.s,"emo",()=>{ const o=[el,...pick(kids.filter(v=>v.e!==el.e),2,el)];
+      return {big:el.s,q:q2.emo.replace("{n}",L==="es"?cap(nm(el)):nm(el)),opts:o.map(v=>({l:v.e,c:v===el})),el}; }));
+  });
+  for(let i=0;i<kids.length;i++){
+    const a = kids[i], b = kids[(i*7+3)%kids.length]; if(a===b) continue;
+    bank.push(mk("cp:"+i,"cmp",()=>{ const big = a.n>b.n?a:b, o=[a,b];
+      return {big:"⚖️",q:q2.cmp,opts:o.map(v=>({l:cap(nm(v)),c:v===big,cat:v.c})),el:big,x:q2.cmpx(who2(a),who2(b))}; }));
+  }
+  QGEN3[L].forEach((g,i)=>bank.push(mk("g3:"+i,"gen",()=>({big:"🧩",q:g[0],opts:[g[1],g[2],g[3]].map((l,j)=>({l,c:j===0})),el:null,x:g[4]}))));
+  QTF3[L].forEach((g,i)=>bank.push(mk("t3:"+i,"tf",()=>({big:"✅❌",q:q.tf,hint:g[0],opts:[{l:q.t,c:!!g[1]},{l:q.f,c:!g[1]}],el:null,noshuffle:true,x:g[2]}))));
   kids.filter(e=>e.n<=20).forEach(el=>{
     bank.push(mk("no:"+el.s,"numof",()=>{ const nums=[el.n,...pick(Array.from({length:20},(_,i)=>i+1),2,el.n)]; return {big:el.e,q:x.numof.replace("{N}",L==="es"?cap(nm(el)):nm(el)),opts:nums.map(v=>({l:String(v),c:v===el.n})),el}; }));
   });
@@ -167,7 +199,7 @@ function renderQuizPage(ctx){
         btns.forEach((v,i)=>{v.disabled=true; if(opts[i].c) v.classList.add("ok");});
         const right = opts.find(o=>o.c).l;
         const last = asked>=total;
-        $("#fb").innerHTML = `${ok?q.ok[Math.floor(Math.random()*q.ok.length)]:`${q.answer} <b>${esc(right)}</b>`}<div class="fbtns"><button class="btn y" id="nx">${last?x.endH:q.next}</button>${d.el?`<a class="btn" href="elemento.html?n=${d.el.n}">${q.sheet} ${d.el.e}</a>`:""}</div>${d.el?`<div class="expl">💡 <b>${x.know}</b> ${expl(d.el)}</div>`:d.x?`<div class="expl">💡 ${esc(d.x)}</div>`:""}`;
+        $("#fb").innerHTML = `${ok?q.ok[Math.floor(Math.random()*q.ok.length)]:`${q.answer} <b>${esc(right)}</b>`}<div class="fbtns"><button class="btn y" id="nx">${last?x.endH:q.next}</button>${d.el?`<a class="btn" href="elemento.html?n=${d.el.n}">${q.sheet} ${d.el.e}</a>`:""}</div>${(d.el||d.x)?`<div class="expl">💡 ${d.el?`<b>${x.know}</b> `:""}${d.x?esc(d.x)+" ":""}${d.el?expl(d.el):""}</div>`:""}`;
         $("#nx").onclick = next; $("#nx").focus({preventScroll:true});
       };
       btns.forEach((v,i)=>v.onclick=()=>{
