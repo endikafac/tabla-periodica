@@ -166,14 +166,16 @@ function openModal(n){
   const period = (el.n>=57&&el.n<=71)?6:(el.n>=89&&el.n<=103)?7:el.r;
   const group = (el.n>=57&&el.n<=71)||(el.n>=89&&el.n<=103) ? "—" : el.col;
   const uses = rich ? rich.u[L] : [];
+  const pv = RAW[(sel===1?118:sel-1)-1], nx = RAW[(sel===118?1:sel+1)-1];
   m.innerHTML = `<div class="mbox cat-${el.c}">
     <button class="btn mx" id="mx" aria-label="close">✖</button>
-    <div class="mleft"><div class="mnum">#${el.n}</div><div class="memo">${el.e}</div><div class="msym">${el.s}</div></div>
+    <div class="mbody"><div class="mleft"><div class="mnum">#${el.n}</div><div class="memo">${el.e}</div><div class="msym">${el.s}</div></div>
     <div class="mright"><span class="mfam">${tt.cats[el.c]}</span><h2>${esc(nm(el))}</h2><p class="mhint">${esc(el.h[L])}</p>
       <div class="mfacts"><span><small>${S.f.g}</small><b>${group}</b></span><span><small>${S.f.p}</small><b>${period}</b></span><span><small>${S.f.st}</small><b>${S.st[fa.st]}</b></span>${fa.m?`<span><small>${S.f.m}</small><b>${fa.m}</b></span>`:""}</div>
       ${uses.length?`<div class="muses">${uses.map(t=>{const i=t.indexOf(" ");return `<span><i>${t.slice(0,i)}</i>${esc(t.slice(i+1))}</span>`}).join("")}</div>`:""}
       ${rich?`<p class="mcur">💡 ${esc(rich.c[L])}</p>`:""}
-      <div class="macts"><button class="btn" id="mp">${S.prev}</button><a class="btn y" href="elemento.html?n=${el.n}">${S.more}</a><button class="btn" id="mk">${S.speak}</button><button class="btn" id="mn">${S.next}</button></div></div></div>`;
+    </div></div>
+    <div class="mfoot"><button class="btn mnav" id="mp" aria-label="${pv.s}">◀ ${pv.s}</button><a class="btn y mmain" href="elemento.html?n=${el.n}">${S.more}</a><button class="btn mnav" id="mk" aria-label="${S.speak}">🔊</button><button class="btn mnav" id="mn" aria-label="${nx.s}">${nx.s} ▶</button></div></div>`;
   m.classList.add("open"); document.body.style.overflow="hidden";
   $("#mx").onclick = closeModal; $("#mp").onclick = ()=>openModal(sel-1); $("#mn").onclick = ()=>openModal(sel+1);
   m.onclick = e => { if(e.target===m) closeModal(); };
